@@ -1,0 +1,69 @@
+Reasons for when form is submitted successfully but refund is not processed:
+1- Contract is still active/registered.
+
+__________________________
+
+2- Contract state not up-to-date in ejar3-security-deposit repo.
+
+__________________________
+
+3- security_deposit_invoice_number field must be present in form record
+Tickets: ES-5140
+Instances: 10775690939
+In case of contract 10775690939, the security deposit invoice number is missing because the form
+was created on 2024-09-01 and the invoice was created on 29-08-2024.
+
+__________________________
+
+4- MO form status not expired/done.
+
+__________________________
+
+5- Form is archived, the field is_archived_form is true.
+
+__________________________
+
+6- Conditions are not met when the inspection_request is completed.
+
+__________________________
+
+7- When both parties responses does not match when form is submitted from both sides.
+
+Code reference:
+lessor_feedback[:answer] == tenant_feedback[:answer] && \
+lessor_feedback[:damage_amount] == tenant_feedback[:damage_amount]
+and mo_activation_date is earlier than 2024-09-05 the inspection request service
+will not be available to either party.
+This case is not handled in the code, so these cases need to be handled manually.
+
+Tickets: ES-5140
+Instances: 10779097091
+
+__________________________
+
+
+8- Refund service is called but refund is not processed because invoice status was not updated to closed(paid).
+https://jira.nhc.sa/browse/ES-5781
+https://devops.housing.sa:8083/ejar3/devs/ejar3-run-script-tool/-/jobs/1669439
+
+__________________________
+
+9- Refund service is called but refund is not processed because Azm error: The beneficiaries must be related to the invoice.
+https://jira.nhc.sa/browse/ES-5781
+In this case, when there's a change in tenant/lessor contract parties then there's a change that either party's idNumber does not match the beneficiaries in the Azm invoice.
+Especially, when there's a manual change in the contract parties and Azm security deposit invoice is not updated.
+
+__________________________
+
+10- If one of the parties is unverified then system does not allow to create MI/MO form.
+Tickets: ES-2804, ES-346
+
+11- Different contract_number appears in the MO form details.
+
+
+Logic:
+If the contract is manually renewed and if the latest version of the contract is having archived form
+then even if the previous version of contract is active/registered, security deposit will be released
+as per system's logic.
+
+

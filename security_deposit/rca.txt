@@ -1,0 +1,6 @@
+We can have a scheduler that may fetch the logs after every 10 mins.
+and find the external_calls that are facing following errors:
+
+1. Beneficiaries must be related to invoice.
+2. Invoice must be closed.
+3. The refunded amount must be equal to total invoice amount
